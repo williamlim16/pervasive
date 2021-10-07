@@ -2,23 +2,18 @@ import React from 'react'
 import TopTrashCanList from './TopTrashCanList'
 import axios from 'axios';
 import { useState, useEffect } from 'react'
+import { useAPI } from '../context/ApiContext'
 function WelcomePage() {
     //Axios
     const [topTrashCans, setTopTrashCans] = useState([]);
+    const { fetchTopTrashCans } = useAPI()
 
     useEffect(() => {
-        // GET request using axios inside useEffect React hook
-        axios
-            .get("http://localhost:8888/node/getTopTrashCans")
-            .then((res) => {
-                console.log("success");
-                console.log(res);
-                setTopTrashCans(res.data.data);
-            }).catch((err) => {
-                console.log("error");
-            });
-
-        // empty dependency array means this effect will only run once (like componentDidMount in classes)
+        async function fetchData() {
+            const result = await fetchTopTrashCans()
+            setTopTrashCans(result.data)
+        }
+        fetchData()
     }, []);
     return (
         <div>

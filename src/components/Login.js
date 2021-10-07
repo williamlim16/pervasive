@@ -1,6 +1,6 @@
 import React from 'react'
-import LoginForm from './LoginForm/LoginForm'
-import Field from './LoginForm/Field'
+import Form from './LoginRegister/Form'
+import Field from './LoginRegister/Field'
 import { useState } from 'react'
 function Login() {
     const [email, setEmail] = useState('');
@@ -51,15 +51,15 @@ function Login() {
     }
 
     return (
-        <LoginForm.Container onSubmit={onSubmit}>
-            <LoginForm.Row>
-                <LoginForm.SubRow>
+        <Form.LoginContainer onSubmit={onSubmit}>
+            <Form.Row>
+                <Form.SubRow>
                     <Field label="Email" name="email" placeholder="Email"
                         value={email} error={error.email} onChange={(e) => setEmail(e.target.value)} />
-                </LoginForm.SubRow>
-            </LoginForm.Row>
-            <LoginForm.Row>
-                <LoginForm.SubRow>
+                </Form.SubRow>
+            </Form.Row>
+            <Form.Row>
+                <Form.SubRow>
                     <Field
                         // icon={<LockIcon />}
                         label="Password"
@@ -70,10 +70,10 @@ function Login() {
                         onChange={(e) => setPass(e.target.value)}
                         error={error.pass}
                     />
-                </LoginForm.SubRow>
-            </LoginForm.Row>
-            <LoginForm.SubmitButton />
-        </LoginForm.Container>
+                </Form.SubRow>
+            </Form.Row>
+            <Form.SubmitButton />
+        </Form.LoginContainer>
     )
 }
 

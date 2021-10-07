@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Container({ children, onSubmit }) {
+function LoginContainer({ children, onSubmit }) {
     return (
         <>
             <div class="relative min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-no-repeat bg-cover">
@@ -29,4 +29,4 @@ function Container({ children, onSubmit }) {
     )
 }
 
-export default Container
+export default LoginContainer

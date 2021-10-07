@@ -8,7 +8,7 @@ const TopTrashCanList = ({ topTrashCans }) => {
           <div className="card-body">
             <h5 class="card-title">Top Trash Can of the Week</h5>
 
-            <h1>{topTrashCans.statusText}</h1>
+            <h1 className="font-caveat">{topTrashCans.statusText}</h1>
             <ul>
               {topTrashCans.map((tc) => (
                 <li key={tc.id}>{tc.Trash_sorter_location}</li>
