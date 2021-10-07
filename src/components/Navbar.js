@@ -1,41 +1,36 @@
-import React from "react";
+import React from 'react'
+import { useState } from 'react'
+import LinkButton from './HeaderComp/LinkButton'
+import Nav from './HeaderComp/Nav'
+import MenuTitle from './HeaderComp/MenuTitle';
+import { useAuth } from '../context/AuthContext'
+import { useHistory } from "react-router-dom"
 
-const Navbar = ({ title }) => {
-  return (
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">
-        {title}
-      </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarText"
-        aria-controls="navbarText"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarText">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              Nyeh
-            </a>
-          </li>
-        </ul>
-        {/* <span class="navbar-text">Navbar text with an inline element</span> */}
-        <button class="btn btn-primary my-2 my-sm-0" type="submit">
-          Login
-        </button>
-      </div>
-    </nav>
-  );
-};
+export default function Navbar() {
+    const [showMenu, setShowMenu] = useState(false)
+    const userName = false
 
-Navbar.defaultProps = {
-  title: "Trash Separator",
-};
+    const { logout } = useAuth()
 
-export default Navbar;
+
+    return (
+        <Nav>
+            <MenuTitle menuOpen={() => setShowMenu(!showMenu)} />
+
+            <div className={`${showMenu ? "flex" : "hidden"} flex-col mt-2 space-y-4 md:flex md:space-y-0 
+            md:flex-row md:items-center md:space-x-10 md:mt-0`}>
+                <LinkButton dest="/">Home</LinkButton>
+                {userName ?
+                    <LinkButton dest="/profile">{userName}</LinkButton> :
+                    <LinkButton dest="/register">Register</LinkButton>
+                }{userName ?
+                    <LinkButton dest="/logout" onClick={() => removeUser()}>Logout</LinkButton> :
+                    <LinkButton dest="/login">Login</LinkButton>
+                }
+            </div>
+        </Nav >
+    )
+}
+
+
+
