@@ -10,9 +10,14 @@ import Navbar from "./components/Navbar";
 import Waves from "./components/Waves";
 import WelcomePage from "./components/WelcomePage";
 import Register from "./components/Register";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/Dashoard";
+import { useEffect } from "react";
 
 function App() {
+	useEffect(() => {
+		document.body.className = "bg-gray-100";
+		document.title = "UMNLP";
+	}, []);
 	return (
 		<Router>
 			<Navbar />
