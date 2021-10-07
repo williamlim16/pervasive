@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 
 //ColorBef indicates color before hover, colorAf indicates color after hover
 const LinkButton = ({ def, active, children, dest, addClass, onClick }) => {
-    console.log(active)
     const colorBef = active ? "text-gray-50" : "text-gray-200";
     const colorAf = active ? "bg-gray-700" : "hover:bg-gray-600 bg-gray-800";
 
