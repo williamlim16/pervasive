@@ -1,25 +1,22 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-function MenuTitle({ menuOpen, colorBef, colorAf }) {
+function MenuTitle({ menuOpen, colorBef, colorAf, onClick }) {
     return (
-        <div className="flex items-center justify-between">
-            <Link to="/" className={`transform hover:scale-125 ease-out font-bold ${colorBef} transition duration-300 text-xl md:text-2xl ${colorAf}`}
-            >UMNLP</Link>
-
-            <div onClick={menuOpen} className="flex md:hidden">
-
-                <button type="button"
-                    className="text-gray-200 hover:text-gray-400 focus:outline-none focus:text-gray-400"
-                    aria-label="toggle menu">
-                    <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current">
-                        <path
-                            d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z">
-                        </path>
-                    </svg>
-                </button>
-            </div>
-        </div >
+        <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
+            <Link to="/" onClick={onClick} className={`transform hover:scale-125 ease-out font-bold ${colorBef} transition duration-300 text-xl md:text-2xl ${colorAf}`}>
+                <img
+                    className="hidden lg:block h-8 w-auto"
+                    src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
+                    alt="Workflow"
+                />
+                <img
+                    className="block lg:hidden h-8 w-auto"
+                    src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
+                    alt="Workflow"
+                />
+            </Link>
+        </div>
 
     )
 }
