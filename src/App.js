@@ -5,21 +5,37 @@ import Navbar from "./components/Navbar";
 import Waves from "./components/Waves";
 import WelcomePage from './components/WelcomePage';
 import Register from './components/Register'
+import { useEffect, useState } from 'react'
+import { useAuth } from './context/AuthContext';
 
 
 function App() {
+  useEffect(() => {
+    document.body.className = 'bg-gray-100'
+    document.title = "Trash Sorter";
+  }, []);
+  const [loggedIn, setLoggedIn] = useState()
+  const { checkUserLogin } = useAuth()
+
+  useEffect(() => {
+    async function setLogin() {
+      const data = await checkUserLogin()
+      setLoggedIn(data)
+    }
+    setLogin()
+  }, [checkUserLogin])
   return (
     <Router>
-      <Navbar />
+      <Navbar loggedIn={loggedIn} />
       <Switch>
         <Route path="/" exact>
           <WelcomePage />
         </Route>
         <Route path="/login">
-          <Login />
+          {loggedIn ? <Redirect to="/" exact /> : <Login />}
         </Route>
         <Route path="/register">
-          <Register />
+          {loggedIn ? <Redirect to="/" exact /> : <Register />}
         </Route>
       </Switch>
     </Router>

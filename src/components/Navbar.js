@@ -1,41 +1,31 @@
-import React from "react";
+import React, { useEffect } from 'react'
+import { useState } from 'react'
+import LinkButton from './NavBarComponent/LinkButton'
+import Nav from './NavBarComponent/Nav'
+import MenuTitle from './NavBarComponent/MenuTitle';
 
-const Navbar = ({ title }) => {
-  return (
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">
-        {title}
-      </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarText"
-        aria-controls="navbarText"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarText">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              Nyeh
-            </a>
-          </li>
-        </ul>
-        {/* <span class="navbar-text">Navbar text with an inline element</span> */}
-        <button class="btn btn-primary my-2 my-sm-0" type="submit">
-          Login
-        </button>
-      </div>
-    </nav>
-  );
-};
 
-Navbar.defaultProps = {
-  title: "Trash Separator",
-};
+export default function Navbar({ loggedIn }) {
+    const [showMenu, setShowMenu] = useState(false)
+    const [navActive, setNavActive] = useState([false, false])
 
-export default Navbar;
+    return (
+        <Nav>
+            <MenuTitle onClick={(() => { setNavActive([false, false]) })} menuOpen={() => setShowMenu(!showMenu)} />
+
+            <div className={`${showMenu ? "flex" : "hidden"} flex-col mt-2 space-y-4 md:flex md:space-y-0 
+            md:flex-row md:items-center md:space-x-10 md:mt-0`}>
+                {loggedIn ?
+                    <LinkButton active={navActive[0]} onClick={(() => { setNavActive([true, false]) })} dest="/profile">Profile</LinkButton> :
+                    <LinkButton active={navActive[0]} onClick={(() => { setNavActive([true, false]) })} dest="/register">Register</LinkButton>
+                }{loggedIn ?
+                    <LinkButton active={navActive[1]} onClick={(() => { setNavActive([false, true]) })} dest="/logout" >Logout</LinkButton> :
+                    <LinkButton active={navActive[1]} onClick={(() => { setNavActive([false, true]) })} dest="/login">Login</LinkButton>
+                }
+            </div>
+        </Nav >
+    )
+}
+
+
+
