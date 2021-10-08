@@ -10,8 +10,9 @@ import Navbar from "./components/Navbar";
 import Waves from "./components/Waves";
 import WelcomePage from "./components/WelcomePage";
 import Register from "./components/Register";
-import Dashboard from "./components/Dashoard";
+import Dashboard from "./components/Dashboard";
 import { useEffect } from "react";
+import Chart from "./components/Dashoard/Chart";
 
 function App() {
 	useEffect(() => {
@@ -33,6 +34,9 @@ function App() {
 				</Route>
 				<Route path="/dashboard">
 					<Dashboard />
+				</Route>
+				<Route path="/testing">
+					<Chart />
 				</Route>
 			</Switch>
 		</Router>
