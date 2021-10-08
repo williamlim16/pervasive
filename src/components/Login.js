@@ -2,10 +2,12 @@ import React from 'react'
 import Form from './LoginRegister/Form'
 import Field from './LoginRegister/Field'
 import { useState } from 'react'
+import { useAuth } from './../context/AuthContext';
+
 function Login() {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
-    //const { login } = useAuth()
+    const { userLogin } = useAuth()
     const [error, setError] = useState({
         email: '',
         pass: ''
@@ -35,11 +37,12 @@ function Login() {
         }
         if (JSON.stringify(errorList) === ('{"email":"","pass":""}')) {
             try {
-                //await login(email, pass)
+                const sentData = { "email": email, "password": pass }
+                const response = await userLogin(sentData)
+                console.log(response)
                 alert("Success Login!")
                 setEmail('')
                 setPass('')
-
             } catch ({ exception }) {
                 alert(exception)
             }
