@@ -1,13 +1,19 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useState } from 'react'
 import LinkButton from './NavBarComponent/LinkButton'
 import Nav from './NavBarComponent/Nav'
 import MenuTitle from './NavBarComponent/MenuTitle';
-
+import { useAuth } from './../context/AuthContext';
 
 export default function Navbar({ loggedIn }) {
     const [showMenu, setShowMenu] = useState(false)
     const [navActive, setNavActive] = useState([false, false])
+    const { userLogout } = useAuth()
+
+    async function logoutprocess() {
+        await userLogout()
+        setNavActive([false, false])
+    }
 
     return (
         <Nav>
@@ -19,7 +25,7 @@ export default function Navbar({ loggedIn }) {
                     <LinkButton active={navActive[0]} onClick={(() => { setNavActive([true, false]) })} dest="/profile">Profile</LinkButton> :
                     <LinkButton active={navActive[0]} onClick={(() => { setNavActive([true, false]) })} dest="/register">Register</LinkButton>
                 }{loggedIn ?
-                    <LinkButton active={navActive[1]} onClick={(() => { setNavActive([false, true]) })} dest="/logout" >Logout</LinkButton> :
+                    <LinkButton active={navActive[1]} onClick={(() => { logoutprocess() })} dest="/logout" >Logout</LinkButton> :
                     <LinkButton active={navActive[1]} onClick={(() => { setNavActive([false, true]) })} dest="/login">Login</LinkButton>
                 }
             </div>

@@ -2,11 +2,11 @@ import './App.css';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import Login from './components/Login';
 import Navbar from "./components/Navbar";
-import Waves from "./components/Waves";
 import WelcomePage from './components/WelcomePage';
 import Register from './components/Register'
 import { useEffect, useState } from 'react'
 import { useAuth } from './context/AuthContext';
+import UserDashboard from './components/UserDashboard';
 
 
 function App() {
@@ -29,7 +29,7 @@ function App() {
       <Navbar loggedIn={loggedIn} />
       <Switch>
         <Route path="/" exact>
-          <WelcomePage />
+          {loggedIn ? <UserDashboard /> : <WelcomePage />}
         </Route>
         <Route path="/login">
           {loggedIn ? <Redirect to="/" exact /> : <Login />}
