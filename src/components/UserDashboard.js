@@ -52,16 +52,13 @@ const UserDashboard = () => {
 				console.log(result)
 				setTopData(result.data)
 				const trashTypeResult = await fetchTrashTypes()
-				console.log(trashTypeResult)
 				setTrashTypes(trashTypeResult.data)
-				masterList.current = trashTypeResult.type_available
+				masterList.current = trashTypeResult.type_available === null ? [] : trashTypeResult.type_available
 				const WeeklyCategory = await fetchWeeklySummary()
 				const weeklyData = []
 				weeklyData.push({ "name": "organic", "total": WeeklyCategory.data.Category.organic })
 				weeklyData.push({ "name": "inorganic", "total": WeeklyCategory.data.Category.inorganic })
 				setCategorySummary(weeklyData)
-
-
 			}
 			else {
 				console.log(topData)
@@ -73,7 +70,7 @@ const UserDashboard = () => {
 				setTopData(arrayData)
 				const trashTypeResult = await fetchUserTrashTypes(accessedData)
 				setTrashTypes(trashTypeResult.data)
-				masterList.current = trashTypeResult.type_available
+				masterList.current = trashTypeResult.type_available === null ? [] : trashTypeResult.type_available
 				const WeeklyCategory = await fetchUserWeeklySummary(accessedData)
 				const weeklyData = []
 				weeklyData.push({ "name": "organic", "total": WeeklyCategory.data.Category.organic })
@@ -91,7 +88,9 @@ const UserDashboard = () => {
 	}, [categorySummary])
 
 	useEffect(() => {
-		if (trashTypes.length && (masterList.current).length) {
+		console.log(trashTypes)
+		if (trashTypes.length &&
+			(masterList.current).length) {
 			setTypeGraph("typegraph", formatTipeChart(trashTypes, masterList.current))
 		}
 	}, [trashTypes])
@@ -144,14 +143,14 @@ const UserDashboard = () => {
 		pieSeries.ticks.template.disabled = true;
 
 		// Create a base filter effect (as if it's not there) for the hover to return to
-		var shadow = pieSeries.slices.template.filters.push(new am4core().DropShadowFilter);
+		var shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter);
 		shadow.opacity = 0;
 
 		// Create hover state
 		var hoverState = pieSeries.slices.template.states.getKey("hover"); // normally we have to create the hover state, in this case it already exists
 
 		// Slightly shift the shadow and make it more prominent on hover
-		var hoverShadow = hoverState.filters.push(new am4core().DropShadowFilter);
+		var hoverShadow = hoverState.filters.push(new am4core.DropShadowFilter);
 		hoverShadow.opacity = 0.7;
 		hoverShadow.blur = 5;
 
@@ -171,8 +170,8 @@ const UserDashboard = () => {
 		let chart = am4core.create(elementSelector, am4charts.XYChart);
 
 		// Create axes
-		// let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-		// let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+		let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+		let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 
 		(masterList.current).forEach((items) => {
 			createSeries(data, items);

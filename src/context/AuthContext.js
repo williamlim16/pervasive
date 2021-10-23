@@ -37,6 +37,7 @@ export function AuthProvider({ children }) {
         })
         const data = await res.json()
         if (data.status === "success") {
+
             alert("Success Register!")
         }
         else {

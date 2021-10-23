@@ -127,10 +127,9 @@ function Login() {
                     "company_name": cname, "password": sha256(pass)
                 }
                 const response = await userRegister(sentData)
-                if (response !== true) {
+                if (response.status !== 'success') {
                     throw response
                 }
-                alert("Success!")
                 SetSuccess('Success! Press here to go to login page !')
                 setName('')
                 setEmail('')
@@ -140,6 +139,7 @@ function Login() {
                 setCname('')
                 setAddress('')
             } catch (errorException) {
+                console.log(errorException)
                 if (errorException.code.search('email')) {
                     errorList.email = errorException.message
                 }
