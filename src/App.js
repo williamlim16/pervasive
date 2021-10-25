@@ -14,6 +14,7 @@ import Dashboard from "./components/Dashboard";
 import { useEffect, useState } from "react";
 import Chart from "./components/Dashoard/Chart";
 import { useAuth } from "./context/AuthContext";
+import DashboardAdmin from "./components/Admin/DashboardAdmin";
 
 function App() {
 	useEffect(() => {
@@ -42,6 +43,9 @@ function App() {
 				</Route>
 				<Route path="/register">
 					{loggedIn ? <Redirect to="/" exact /> : <Register />}
+				</Route>
+				<Route path="/admin">
+					<DashboardAdmin />
 				</Route>
 			</Switch>
 		</Router>
