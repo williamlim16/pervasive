@@ -2,6 +2,9 @@ import React from 'react'
 import Form from './LoginRegister/Form'
 import Field from './LoginRegister/Field'
 import { useState } from 'react'
+import { sha256 } from 'js-sha256';
+import { useAuth } from '../context/AuthContext';
+
 function Login() {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('');
@@ -21,7 +24,7 @@ function Login() {
         pass: '',
         conf: ''
     })
-    // const { register } = useAuth()
+    const { userRegister } = useAuth()
 
     function clearFields() {
         setName('')
@@ -118,11 +121,15 @@ function Login() {
         }
         if (JSON.stringify(errorList) === ('{"email":"","name":"","telephone":"","address":"","cname":"","pass":"","conf":""}')) {
             try {
-                // const response = await register(name, email, pass)
-                // if (response !== true) {
-                //     throw response
-                // }
-                alert("Success!")
+                const sentData = {
+                    "name": name, "email": email,
+                    "telephone": telephone, "address": address,
+                    "company_name": cname, "password": sha256(pass)
+                }
+                const response = await userRegister(sentData)
+                if (response.status !== 'success') {
+                    throw response
+                }
                 SetSuccess('Success! Press here to go to login page !')
                 setName('')
                 setEmail('')
@@ -132,6 +139,7 @@ function Login() {
                 setCname('')
                 setAddress('')
             } catch (errorException) {
+                console.log(errorException)
                 if (errorException.code.search('email')) {
                     errorList.email = errorException.message
                 }
@@ -142,8 +150,6 @@ function Login() {
             return errorList
         })
         setLoading(false)
-
-
 
     }
 

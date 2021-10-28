@@ -3,12 +3,20 @@ import Illustration from "../assets/Illustration";
 
 function LoginContainer({ children, onSubmit }) {
 	return (
+<<<<<<< HEAD
 		<div className="relative">
 			<div className="z-10 absolute top-56 left-3">
 				<Illustration />
 			</div>
 			<div className="bg-light-blue relative min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-no-repeat bg-cover">
 				<div className="absolute inset-0 z-0"></div>
+=======
+		<>
+			<div className="relative min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-no-repeat bg-cover">
+				<div className="z-10 absolute top-56 left-3">
+					<Illustration />
+				</div>
+>>>>>>> master
 				<div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl z-10">
 					<div className="text-center">
 						<h2 className="mt-6 text-3xl font-bold text-gray-900">
@@ -29,7 +37,11 @@ function LoginContainer({ children, onSubmit }) {
 						<span>Don't have an account?</span>
 						<a
 							href="./register"
+<<<<<<< HEAD
 							className="text-light-blue hover:text-light-blue hover:underline cursor-pointer transition ease-in duration-300"
+=======
+							className="text-indigo-500 hover:text-indigo-500no-underline hover:underline cursor-pointer transition ease-in duration-300"
+>>>>>>> master
 						>
 							Sign up
 						</a>

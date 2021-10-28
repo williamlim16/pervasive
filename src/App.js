@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import Chart from "./components/Dashoard/Chart";
 import { useAuth } from "./context/AuthContext";
 import DashboardAdmin from "./components/Admin/DashboardAdmin";
+import UserDashboard from "./components/UserDashboard";
 
 function App() {
 	useEffect(() => {
@@ -36,16 +37,13 @@ function App() {
 			<Navbar loggedIn={loggedIn} />
 			<Switch>
 				<Route path="/" exact>
-					<WelcomePage />
+					{loggedIn ? <UserDashboard /> : <WelcomePage />}
 				</Route>
 				<Route path="/login">
 					{loggedIn ? <Redirect to="/" exact /> : <Login />}
 				</Route>
 				<Route path="/register">
 					{loggedIn ? <Redirect to="/" exact /> : <Register />}
-				</Route>
-				<Route path="/admin">
-					<DashboardAdmin />
 				</Route>
 			</Switch>
 		</Router>

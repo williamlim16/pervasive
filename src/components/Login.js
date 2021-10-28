@@ -3,6 +3,7 @@ import Form from './LoginRegister/Form'
 import Field from './LoginRegister/Field'
 import { useState } from 'react'
 import { useAuth } from './../context/AuthContext';
+import { sha256 } from 'js-sha256';
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -37,10 +38,8 @@ function Login() {
         }
         if (JSON.stringify(errorList) === ('{"email":"","pass":""}')) {
             try {
-                const sentData = { "email": email, "password": pass }
-                const response = await userLogin(sentData)
-                console.log(response)
-                alert("Success Login!")
+                const sentData = { "email": email, "password": sha256(pass) }
+                await userLogin(sentData)
                 setEmail('')
                 setPass('')
             } catch ({ exception }) {

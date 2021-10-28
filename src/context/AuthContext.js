@@ -27,6 +27,25 @@ export function AuthProvider({ children }) {
         return isLogin
     }
 
+    async function userRegister(val) {
+        const res = await fetch("./api/register", {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(val)
+        })
+        const data = await res.json()
+        if (data.status === "success") {
+
+            alert("Success Register!")
+        }
+        else {
+            alert("Register Failed!")
+        }
+        return data
+    }
+
     async function userLogin(val) {
         const res = await fetch("./api/login", {
             method: 'POST',
@@ -36,12 +55,30 @@ export function AuthProvider({ children }) {
             body: JSON.stringify(val)
         })
         const data = await res.json()
+        if (data.status === "success") {
+            alert("Success Login!")
+            setIsLogin(true)
+        }
+        else {
+            alert("Login Failed!")
+        }
         return data
+    }
+
+    async function userLogout() {
+        const res = await fetch("./api/logout", {
+            method: 'POST'
+        }).then(
+            setIsLogin(false)
+        )
+        console.log(res)
     }
 
     const value = {
         userLogin,
-        checkUserLogin
+        checkUserLogin,
+        userLogout,
+        userRegister
     }
     return (
         <AuthContext.Provider value={value}>
