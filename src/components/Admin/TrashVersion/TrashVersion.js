@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from "react";
+//Local component
+import Button from "../Parts/Button";
+import UserInput from "../Parts/UserInput";
+
+//Ext library
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import DataTable from "react-data-table-component";
-import Button from "../Parts/Button";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import "react-tabs/style/react-tabs.css";
+import ScaleLoader from "react-spinners/ScaleLoader";
 import qs from "qs";
+
+const CustomLoader = () => (
+	<div className="py-6">
+		<ScaleLoader />
+	</div>
+);
 
 const TrashVersion = () => {
 	const axios = require("axios");
@@ -14,13 +25,22 @@ const TrashVersion = () => {
 	const Swal = require("sweetalert2");
 
 	/**
+	 * Request header config
+	 * */
+	const headers = {
+		"Access-Control-Allow-Origin": "*",
+		"Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+	};
+
+	/**
 	 * Data tab
 	 **/
 	const [tabIndex, setTabIndex] = useState(0);
 
 	/**
-	 * Data table
+	 * View version data table
 	 **/
+	const [pending, setPending] = useState(true);
 	const [data, setData] = useState([]);
 	const updateTrashVersion = () => {
 		setData([]);
@@ -33,6 +53,7 @@ const TrashVersion = () => {
 					organicmax: response.Organic_max_height,
 				};
 				setData((old) => [...old, responseFormat]);
+				setPending(false);
 			}
 		});
 	};
@@ -99,7 +120,7 @@ const TrashVersion = () => {
 
 	const deleteTrashVersion = (selectedRows, callback) => {
 		for (let select of selectedRows) {
-			let url = "api/deleteTrashVersion/" + select.id;
+			let url = "/api/deleteTrashVersion/" + select.id;
 			axios.delete(url);
 		}
 		callback();
@@ -133,11 +154,32 @@ const TrashVersion = () => {
 	};
 
 	/**
-	 * Edit table stuff
+	 * Edit version stuff
 	 * */
-	const editVersion = (row) => {
-		console.log("hellow", row);
+	const [editState, setEditState] = useState({});
+	const editHandler = (e) => {
+		const newdata = { ...editState };
+		newdata[e.target.id] = e.target.value;
+		setEditState(newdata);
 	};
+	const submitEdit = () => {
+		let url = "/api/editTrashVersion/" + editState.id + "/";
+		const submitData = {
+			version_name: editState.versionname,
+			organic_max: editState.organicmax,
+			inorganic_max: editState.inorganicmax,
+		};
+
+		axios
+			.put(url, qs.stringify(submitData))
+			.then(console.log("success"))
+			.catch((err) => console.log(err));
+	};
+
+	////Debug
+	//useEffect(() => {
+	//	console.log(editState);
+	//}, [editState]);
 
 	//Data table config
 	const columns = [
@@ -148,21 +190,76 @@ const TrashVersion = () => {
 		{
 			name: "Version",
 			selector: (row) => row.versionname,
+			cell: (row) =>
+				row.id === editState.id ? (
+					<input
+						id="versionname"
+						type="text"
+						defaultValue={editState.versionname}
+						onChange={editHandler}
+					/>
+				) : (
+					<p>{row.versionname}</p>
+				),
 		},
 		{
 			name: "Inorganic Max Cap",
 			selector: (row) => row.inorganicmax,
+			cell: (row) =>
+				row.id === editState.id ? (
+					<input
+						id="inorganicmax"
+						type="number"
+						defaultValue={editState.inorganicmax}
+						onChange={editHandler}
+					/>
+				) : (
+					<p>{row.inorganicmax}</p>
+				),
 		},
 		{
 			name: "Organic Max Cap",
 			selector: (row) => row.organicmax,
+			cell: (row) => {
+				return row.id === editState.id ? (
+					<input
+						id="organicmax"
+						type="number"
+						defaultValue={row.organicmax}
+						onChange={editHandler}
+					/>
+				) : (
+					<p>{row.inorganicmax}</p>
+				);
+			},
 		},
 		{
 			button: true,
-			width: "56px",
-			cell: (row) => (
-				<Button label="Edit" handleClick={editVersion(row)} />
-			),
+			width: "250px",
+			cell: (row) => {
+				if (row.id === editState.id) {
+					return (
+						<div className="grid grid-cols-2 gap-4">
+							<Button label="Save" handleClick={submitEdit} />
+							<Button
+								label="Cancel"
+								handleClick={() => {
+									setEditState({});
+								}}
+							/>
+						</div>
+					);
+				} else {
+					return (
+						<Button
+							label="Edit"
+							handleClick={() => {
+								setEditState(row);
+							}}
+						/>
+					);
+				}
+			},
 		},
 	];
 	//Selected data table config
@@ -216,6 +313,8 @@ const TrashVersion = () => {
 							onSelectedRowsChange={handleChange}
 							clearSelectedRows={toggledClearRows}
 							pagination
+							progressPending={pending}
+							progressComponent={<CustomLoader />}
 						/>
 					</TabPanel>
 					<TabPanel>
@@ -232,11 +331,12 @@ const TrashVersion = () => {
 										Version
 									</label>
 									<input
-										className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 										id="version"
 										type="text"
-										placeholder="Version"
-										onChange={(e) => formChangeHandler(e)}
+										placeholder="test"
+										onchange={(e) => {
+											formChangeHandler(e);
+										}}
 										value={formData.version}
 									/>
 								</div>
