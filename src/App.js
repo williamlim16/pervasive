@@ -10,9 +10,9 @@ import Navbar from "./components/Navbar";
 import Waves from "./components/Waves";
 import WelcomePage from "./components/WelcomePage";
 import Register from "./components/Register";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/Dashboard/Dashboard";
 import { useEffect, useState } from "react";
-import Chart from "./components/Dashoard/Chart";
+import Chart from "./components/Dashboard/Chart";
 import { useAuth } from "./context/AuthContext";
 import DashboardAdmin from "./components/Admin/DashboardAdmin";
 import UserDashboard from "./components/UserDashboard";
@@ -44,6 +44,9 @@ function App() {
 				</Route>
 				<Route path="/register">
 					{loggedIn ? <Redirect to="/" exact /> : <Register />}
+				</Route>
+				<Route path="/admin">
+					<DashboardAdmin />
 				</Route>
 			</Switch>
 		</Router>

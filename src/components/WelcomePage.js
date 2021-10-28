@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React from "react";
 import TopTrashCanList from "./TopTrashCanList";
 import axios from "axios";
@@ -28,15 +27,6 @@ function WelcomePage() {
 			</div>
 		</div>
 	);
-=======
-import React from 'react'
-
-function WelcomePage() {
-    return (
-        <div>
-        </div>
-    )
->>>>>>> master
 }
 
 export default WelcomePage;
