@@ -3,6 +3,7 @@ import TopTrashCanList from "./TopTrashCanList";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useAPI } from "../context/ApiContext";
+
 function WelcomePage() {
 	//Axios
 	const [topTrashCans, setTopTrashCans] = useState([]);
