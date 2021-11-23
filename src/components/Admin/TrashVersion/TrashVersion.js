@@ -114,7 +114,6 @@ const TrashVersion = () => {
 	const [selectedRows, setSelectedRows] = useState([]);
 	const [toggledClearRows, setToggledClearRows] = useState(false);
 	const handleChange = (selectedItem) => {
-		console.log(toggledClearRows);
 		setSelectedRows(selectedItem.selectedRows);
 	};
 
@@ -166,14 +165,14 @@ const TrashVersion = () => {
 		let url = "/api/editTrashVersion/" + editState.id + "/";
 		const submitData = {
 			version_name: editState.versionname,
-			organic_max: editState.organicmax,
-			inorganic_max: editState.inorganicmax,
+			organic_max: parseInt(editState.organicmax),
+			inorganic_max: parseInt(editState.inorganicmax),
 		};
 
-		axios
-			.put(url, qs.stringify(submitData))
-			.then(console.log("success"))
-			.catch((err) => console.log(err));
+		axios.put(url, qs.stringify(submitData)).then((res) => {
+			updateTrashVersion();
+			setEditState({});
+		});
 	};
 
 	////Debug
@@ -197,6 +196,7 @@ const TrashVersion = () => {
 						type="text"
 						defaultValue={editState.versionname}
 						onChange={editHandler}
+						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 					/>
 				) : (
 					<p>{row.versionname}</p>
@@ -210,6 +210,7 @@ const TrashVersion = () => {
 					<input
 						id="inorganicmax"
 						type="number"
+						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 						defaultValue={editState.inorganicmax}
 						onChange={editHandler}
 					/>
@@ -225,11 +226,12 @@ const TrashVersion = () => {
 					<input
 						id="organicmax"
 						type="number"
+						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 						defaultValue={row.organicmax}
 						onChange={editHandler}
 					/>
 				) : (
-					<p>{row.inorganicmax}</p>
+					<p>{row.organicmax}</p>
 				);
 			},
 		},
