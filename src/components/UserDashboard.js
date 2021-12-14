@@ -5,6 +5,8 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import { useAPI } from '../context/ApiContext'
+import ReactDOM from 'react-dom';
+
 
 const UserDashboard = () => {
 
@@ -15,13 +17,19 @@ const UserDashboard = () => {
 	const [categorySummary, setCategorySummary] = useState([])
 	const { fetchTopTrashCans, fetchTrashCapacity, fetchTrashTypes,
 		fetchUserTrashCans, fetchUserTrashTypes, fetchWeeklySummary,
-		fetchUserWeeklySummary } = useAPI()
+		fetchUserWeeklySummary, registerTrashCan } = useAPI()
 	const [accessedData, setAccessedData] = useState('all')
 	const masterList = useRef([])
+	const [searchInput, setSearchInput] = useState('')
+	const [open, setOpen] = useState(false)
+	const [modalError, setModalError] = useState([])
+	const [modalSuccess, setModalSuccess] = useState('')
+	const [location, setLocation] = useState('')
+	const [trashId, setTrashId] = useState('')
+	const [loadingModal, setLoadingModal] = useState(false)
 
 	function formatTipeChart(data, masterlist) {
 		let newData = []
-		console.log(masterlist)
 		data.forEach((item) => {
 			let tempObj = {}
 			let temp = []
@@ -39,7 +47,6 @@ const UserDashboard = () => {
 			})
 			newData.push(tempObj)
 		})
-		console.log(newData)
 		return (newData)
 	}
 
@@ -47,13 +54,19 @@ const UserDashboard = () => {
 		async function fetchData() {
 			const allUserTrashCanResult = await fetchUserTrashCans()
 			setAllUserTrashCan(allUserTrashCanResult.data)
+		}
+		fetchData()
+	}, [accessedData]);
+
+	useEffect(() => {
+		async function fetchSpecificData() {
 			if (accessedData === 'all') {
 				const result = await fetchTopTrashCans()
-				console.log(result)
 				setTopData(result.data)
+				console.log(result)
 				const trashTypeResult = await fetchTrashTypes()
 				setTrashTypes(trashTypeResult.data)
-				masterList.current = trashTypeResult.type_available === null ? [] : trashTypeResult.type_available
+				masterList.current = trashTypeResult.type_available === null ? ['plastic', 'aluminium'] : trashTypeResult.type_available
 				const WeeklyCategory = await fetchWeeklySummary()
 				const weeklyData = []
 				weeklyData.push({ "name": "organic", "total": WeeklyCategory.data.Category.organic })
@@ -61,16 +74,15 @@ const UserDashboard = () => {
 				setCategorySummary(weeklyData)
 			}
 			else {
-				console.log(topData)
 				const result = await fetchTrashCapacity(accessedData)
 				const arrayData = []
+				console.log(result)
 				arrayData.push({ "name": "organic", "current": result.data.Organic_capacity, "max": result.data.Organic_max_height - result.data.Organic_capacity })
 				arrayData.push({ "name": "inorganic", "current": result.data.Inorganic_capacity, "max": result.data.Inorganic_max_height - result.data.Inorganic_capacity })
-				console.log(result.data)
 				setTopData(arrayData)
 				const trashTypeResult = await fetchUserTrashTypes(accessedData)
 				setTrashTypes(trashTypeResult.data)
-				masterList.current = trashTypeResult.type_available === null ? [] : trashTypeResult.type_available
+				masterList.current = trashTypeResult.type_available === null ? ['plastic', 'aluminium'] : trashTypeResult.type_available
 				const WeeklyCategory = await fetchUserWeeklySummary(accessedData)
 				const weeklyData = []
 				weeklyData.push({ "name": "organic", "total": WeeklyCategory.data.Category.organic })
@@ -78,8 +90,8 @@ const UserDashboard = () => {
 				setCategorySummary(weeklyData)
 			}
 		}
-		fetchData()
-	}, [accessedData]);
+		fetchSpecificData()
+	}, [allUserTrashCan])
 
 	useEffect(() => {
 		if (categorySummary.length) {
@@ -88,7 +100,6 @@ const UserDashboard = () => {
 	}, [categorySummary])
 
 	useEffect(() => {
-		console.log(trashTypes)
 		if (trashTypes.length &&
 			(masterList.current).length) {
 			setTypeGraph("typegraph", formatTipeChart(trashTypes, masterList.current))
@@ -97,7 +108,6 @@ const UserDashboard = () => {
 
 	useEffect(() => {
 		if (topData.length) {
-			console.log(topData)
 			if (accessedData === 'all') {
 				setMostTable("topchart", topData)
 			}
@@ -109,7 +119,21 @@ const UserDashboard = () => {
 
 	function setCategoryGraph(elementSelector, data) {
 		am4core.useTheme(am4themes_animated);
+		let check_data = false
+
 		// Themes end
+		if (data[0].total === 0 && data[1].total === 0) {
+			data = [{
+				"name": "Dummy",
+				"disabled": true,
+				"total": 1000,
+				"color": am4core.color("#dadada"),
+				"opacity": 0.3,
+				"strokeDasharray": "4,4",
+				"tooltip": "Trash sorter has not received any trash in this week"
+			}];
+			check_data = true
+		}
 
 		// Create chart instance
 		var chart = am4core.create(elementSelector, am4charts.PieChart);
@@ -142,6 +166,17 @@ const UserDashboard = () => {
 
 		pieSeries.ticks.template.disabled = true;
 
+		/* Set up slice appearance */
+		var slice = pieSeries.slices.template;
+		slice.propertyFields.fill = "color";
+		slice.propertyFields.fillOpacity = "opacity";
+		slice.propertyFields.stroke = "color";
+		slice.propertyFields.strokeDasharray = "strokeDasharray";
+		slice.propertyFields.tooltipText = "tooltip";
+
+		pieSeries.labels.template.propertyFields.disabled = "disabled";
+		pieSeries.ticks.template.propertyFields.disabled = "disabled";
+
 		// Create a base filter effect (as if it's not there) for the hover to return to
 		var shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter);
 		shadow.opacity = 0;
@@ -155,9 +190,44 @@ const UserDashboard = () => {
 		hoverShadow.blur = 5;
 
 		// Add a legend
-		chart.legend = new am4charts.Legend();
+		if (!check_data)
+			chart.legend = new am4charts.Legend();
 
 		chart.data = data
+
+		var indicator;
+		function showIndicator() {
+			if (indicator) {
+				indicator.show();
+			}
+			else {
+				indicator = chart.tooltipContainer.createChild(am4core.Container);
+				indicator.background.fill = am4core.color("#fff");
+				indicator.background.fillOpacity = 0.8;
+				indicator.width = am4core.percent(100);
+				indicator.height = am4core.percent(100);
+
+				var indicatorLabel = indicator.createChild(am4core.Label);
+				indicatorLabel.text = "No data...";
+				indicatorLabel.align = "center";
+				indicatorLabel.valign = "middle";
+				indicatorLabel.fontSize = 20;
+			}
+		}
+
+		function hideIndicator() {
+			indicator.hide();
+		}
+
+		chart.events.on("beforevalidated", function (ev) {
+			// check if there's data
+			if (!check_data) {
+				showIndicator();
+			}
+			else if (indicator) {
+				hideIndicator();
+			}
+		});
 	}
 
 	function setTypeGraph(elementSelector, data) {
@@ -172,6 +242,7 @@ const UserDashboard = () => {
 		// Create axes
 		let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
 		let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+		valueAxis.min = 0;
 
 		(masterList.current).forEach((items) => {
 			createSeries(data, items);
@@ -347,22 +418,65 @@ const UserDashboard = () => {
 	}
 
 	function onClickSearchBar(value, title) {
+		am4core.disposeAllCharts();
 		setTopData([])
 		setAccessedData(value)
 		setTitle("Viewing " + title)
 	}
 
+	async function checkAddTrash(e) {
+		e.preventDefault()
+		setLoadingModal(true)
+		const tempError = []
+		if (trashId.length === 0) {
+			tempError.push("Trash Code could not be empty")
+		}
+		if (location.length === 0) {
+			tempError.push("Location name could not be empty")
+		}
+		if (tempError.length > 0) {
+			setModalError(tempError)
+			setModalSuccess("")
+			setLoadingModal(false)
+			return;
+		}
+		const val = { "trash_code": trashId, "location": location }
+		const data = await registerTrashCan(val)
+		console.log(typeof (data))
+		console.log(data)
+		setLoadingModal(false)
+		if (data.status === 'unauthorized') {
+			if (data.msg === 'failed, trash object is already assigned to an user')
+				setModalError(["The Trash code has already been asigned to an user"])
+			else
+				setModalError(["The trash code may be invalid"])
+			setModalSuccess("")
+			return;
+		}
+		if (data.status === 'success') {
+			setModalSuccess("Trash code successfully assigned!")
+			const allUserTrashCanResult = await fetchUserTrashCans()
+			setAllUserTrashCan(allUserTrashCanResult.data)
+			return;
+		}
+		else {
+			setModalError(["Error has occured, please try again later"])
+			setModalSuccess("")
+			return;
+		}
+	}
+
 	return (
 		<Dashboard.Container>
-
-			<Dashboard.SearchBar onClick={onClickSearchBar} searchBarData={allUserTrashCan} />
+			<Dashboard.ModalAddTrashCan loadingModal={loadingModal} open={open} onClose={() => setOpen(false)} modalSuccess={modalSuccess} modalError={modalError} onClick={checkAddTrash} onChangeId={(e) => setTrashId(e.target.value)} onChangeLocation={(e) => setLocation(e.target.value)} />
+			<Dashboard.SearchBar onChange={(e) => setSearchInput(e.target.value)} onClick={onClickSearchBar} searchBarData={allUserTrashCan} searchInput={searchInput} onClickAdd={() => setOpen(true)} />
 			<Dashboard.Config title={title}>
 				<Dashboard.Grid size="2">
-					<Dashboard.Card charTitle="Summary of trash category taken by sorter" chart_id="categorygraph" />
-					<Dashboard.Card charTitle={accessedData === 'all' ? "Top Trash Cans Used" : "Current Trash Can Capacity in cm"} chart_id="topchart" />
+					<Dashboard.Card len={topData.length} charTitle="Summary of trash category taken by sorter" chart_id="categorygraph" />
+					<Dashboard.Card len={topData.length} charTitle={accessedData === 'all' ? "Top Trash Cans Used" : "Current Trash Can Capacity in cm"} chart_id="topchart" />
 				</Dashboard.Grid>
 				<Dashboard.Grid size="1">
-					<Dashboard.Card charTitle="Distribution of trash types thrown" chart_id="typegraph" />
+					<Dashboard.Card len={topData.length} charTitle="Distribution of trash types thrown" chart_id="typegraph" />
 				</Dashboard.Grid>
 			</Dashboard.Config>
 		</Dashboard.Container>

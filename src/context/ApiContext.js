@@ -8,6 +8,18 @@ export function useAPI() {
 
 
 export function APIProvider({ children }) {
+    async function registerTrashCan(val) {
+        const res = await fetch("./api/registerTrashCan", {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(val)
+        })
+        const data = await res.json()
+        return data
+    }
+
     async function fetchTopTrashCans() {
         const res = await fetch("./node/getTopTrashCans")
         const data = await res.json()
@@ -57,7 +69,8 @@ export function APIProvider({ children }) {
         fetchUserTrashCans,
         fetchUserTrashTypes,
         fetchWeeklySummary,
-        fetchUserWeeklySummary
+        fetchUserWeeklySummary,
+        registerTrashCan
     }
     return (
         <ApiContext.Provider value={value}>

@@ -3,7 +3,7 @@ import {
 	BrowserRouter as Router,
 	Switch,
 	Route,
-	Redirect,
+	Redirect
 } from "react-router-dom";
 import Login from "./components/Login";
 import Navbar from "./components/Navbar";
@@ -11,6 +11,7 @@ import Waves from "./components/Waves";
 import WelcomePage from "./components/WelcomePage";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard/Dashboard";
+import React from 'react';
 import { useEffect, useState } from "react";
 import Chart from "./components/Dashboard/Chart";
 import { useAuth } from "./context/AuthContext";

@@ -52,12 +52,14 @@ function Login() {
 
     }
 
+
+
     return (
         <Form.LoginContainer onSubmit={onSubmit}>
             <Form.Row>
                 <Form.SubRow>
                     <Field label="Email" name="email" placeholder="Email"
-                        value={email} error={error.email} onChange={(e) => setEmail(e.target.value)} />
+                        value={email} error={error.email} onChange={(e) => { setEmail(e.target.value) }} />
                 </Form.SubRow>
             </Form.Row>
             <Form.Row>
