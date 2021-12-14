@@ -10,6 +10,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
 
     const [isLogin, setIsLogin] = useState(false)
+    const [isAdmin, setIsAdmin] = useState(-1)
 
     useEffect(() => {
         async function checkLogin() {
@@ -17,7 +18,10 @@ export function AuthProvider({ children }) {
                 method: 'POST'
             })
             const data = await res.json()
-            data.status === "logged in" ? setIsLogin(true) : setIsLogin(false)
+            if (data.status === "logged in") {
+                setIsLogin(true)
+                setIsAdmin(data.isAdmin)
+            }
         }
 
         checkLogin()
@@ -25,6 +29,10 @@ export function AuthProvider({ children }) {
 
     function checkUserLogin() {
         return isLogin
+    }
+
+    function checkAdmin() {
+        return isAdmin
     }
 
     async function userRegister(val) {
@@ -78,7 +86,8 @@ export function AuthProvider({ children }) {
         userLogin,
         checkUserLogin,
         userLogout,
-        userRegister
+        userRegister,
+        checkAdmin
     }
     return (
         <AuthContext.Provider value={value}>
