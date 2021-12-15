@@ -334,12 +334,10 @@ const TrashVersion = () => {
 									</label>
 									<input
 										id="version"
+										className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 										type="text"
-										placeholder="test"
-										onchange={(e) => {
-											formChangeHandler(e);
-										}}
 										value={formData.version}
+										onChange={(e) => formChangeHandler(e)}
 									/>
 								</div>
 								<div className="mb-4">
