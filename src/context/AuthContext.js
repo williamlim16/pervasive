@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         async function checkLogin() {
-            const res = await fetch("https://trash-separator-api.herokuapp.com/api/checkLogin", {
+            const res = await fetch("./api/checkLogin", {
                 method: 'POST'
             })
             const data = await res.json()
@@ -36,7 +36,7 @@ export function AuthProvider({ children }) {
     }
 
     async function userRegister(val) {
-        const res = await fetch("https://trash-separator-api.herokuapp.com/api/register", {
+        const res = await fetch("./api/register", {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'
@@ -55,7 +55,7 @@ export function AuthProvider({ children }) {
     }
 
     async function userLogin(val) {
-        const res = await fetch("https://trash-separator-api.herokuapp.com/api/login", {
+        const res = await fetch("./api/login", {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'
@@ -65,7 +65,14 @@ export function AuthProvider({ children }) {
         const data = await res.json()
         if (data.status === "success") {
             alert("Success Login!")
-            setIsLogin(true)
+            const res = await fetch("./api/checkLogin", {
+                method: 'POST'
+            })
+            const data = await res.json()
+            if (data.status === "logged in") {
+                setIsLogin(true)
+                setIsAdmin(data.isAdmin)
+            }
         }
         else {
             alert("Login Failed!")
@@ -74,7 +81,7 @@ export function AuthProvider({ children }) {
     }
 
     async function userLogout() {
-        const res = await fetch("https://trash-separator-api.herokuapp.com/api/logout", {
+        const res = await fetch("./api/logout", {
             method: 'POST'
         }).then(
             setIsLogin(false)
