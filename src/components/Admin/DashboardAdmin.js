@@ -16,13 +16,31 @@ const DashboardAdmin = () => {
 	if (menu === "TrashCans") {
 		return (
 			<div className="px-10">
+				<div className="m-3">
+					<Button label="Trash" handleClick={ChangeToTrashVersion} />
+				</div>
+				<div className="m-3">
+					<Button
+						label="Trash Version"
+						handleClick={ChangeToTrashCan}
+					/>
+				</div>
 				<TrashVersions />
 			</div>
 		);
 	} else if (menu === "TrashVersions") {
 		return (
 			<div className="px-10">
-				<TrashVersions />
+				<div className="m-3">
+					<Button label="Trash" handleClick={ChangeToTrashVersion} />
+				</div>
+				<div className="m-3">
+					<Button
+						label="Trash Version"
+						handleClick={ChangeToTrashCan}
+					/>
+				</div>
+				<TrashCan />
 			</div>
 		);
 	}
